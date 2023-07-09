@@ -9,8 +9,8 @@ if (empty($_SERVER['HTTP_USER_AGENT'])) {
         exit;
     } else {
         $data = json_decode(file_get_contents('php://input'), true);
-        if(isset($data['iduser'])){
-            $result = ObtenerRouter($data['iduser'],"postgres");
+        if(isset($data['usuario']) && isset($data['clave'])){
+            $result = loginUser($data['usuario'],$data['clave'],"postgres");
             echo json_encode(array("estado"=>true,"data"=>$result));
         } else {
             echo json_encode(array("estado"=>false,"error"=>"Informacion incorrecta"));
@@ -19,9 +19,9 @@ if (empty($_SERVER['HTTP_USER_AGENT'])) {
     }
 }
 
-function ObtenerRouter($iduser, $nombd){
+function loginUser($usuario, $clave, $nombd){
 
-    $sql = "SELECT usuario, clave FROM router WHERE iduser = '$iduser' LIMIT 1";
+    $sql = "SELECT iduser FROM users WHERE usuario = '$usuario' and clave = '$clave' LIMIT 1";
 
     if($nombd == "mysql" OR $nombd == "maria"){
 
